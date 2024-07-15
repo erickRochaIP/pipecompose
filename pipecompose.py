@@ -10,6 +10,12 @@ class Chain:
 
 	def __invert__(self):
 		return self.value
+	
+	def pipe(self, function):
+		return self | function
+	
+	def get(self):
+		return ~self
 
 get = lambda x: x
 _rec_op = lambda op: lambda *args: lambda x: (rec_op := lambda x, *a: x if not a else rec_op(op(x, a[0]), *(a[1:])))(x, *args)
