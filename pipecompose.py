@@ -8,6 +8,16 @@ class Chain:
 	def __gt__(self, function):
 		return function(self.value)
 
+	def __invert__(self):
+		return self.value
+
 get = lambda x: x
-attr = lambda *args: lambda x: (rec_attr := lambda x, *args:  x if not args else rec_attr(x[args[0]], *(args[1:])))(x, *args)
-call = lambda function: lambda *args: lambda x: function(x, *args)
+_rec_op = lambda op: lambda *args: lambda x: (rec_op := lambda x, *a: x if not a else rec_op(op(x, a[0]), *(a[1:])))(x, *args)
+
+attr = _rec_op(lambda x, a: x[a])
+compose = _rec_op(lambda x, f: f(x))
+
+_apply = lambda op: lambda f: lambda *args: lambda x: op(x, f, *args)
+
+call = _apply(lambda x, f, *args: f(x, *args))
+map = _apply(lambda x, f, *args: [f(it, *args) for it in x])
